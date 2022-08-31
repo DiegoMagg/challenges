@@ -1,0 +1,52 @@
+version: "3.7"
+
+x-environ: &environ
+  environment:
+    - POSTGRES_DB=luiza
+    - POSTGRES_USER=luiza
+    - POSTGRES_PASSWORD=luiza
+    - POSTGRES_HOST=postgres-local
+
+x-base: &base
+  build:
+    context: .
+    dockerfile: ./deploy/imagens/Dockerfile
+  platform: linux/x86_64
+  restart: on-failure
+  image: luiza-local
+  volumes:
+    - ./app:/app
+
+services:
+
+  api-luiza-local:
+    <<: [*base, *environ]
+    container_name: api-luiza-local
+    command: pipenv run gunicorn luiza.wsgi --bind 0:8000 --timeout 120 --log-level debug
+    depends_on:
+      - postgres-local
+      - luiza-migrations
+    ports:
+      - 8000:8000
+
+  luiza-migrations:
+    <<: [*base, *environ]
+    container_name: luiza-migrations
+    command: pipenv run python manage.py migrate
+    depends_on:
+      - postgres-local
+
+  postgres-local:
+    <<: *environ
+    container_name: postgres-local
+    image: postgres:14.4-alpine
+    platform: linux/x86_64
+    restart: on-failure
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+    driver: local
