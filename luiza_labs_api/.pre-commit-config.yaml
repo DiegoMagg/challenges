@@ -1,0 +1,35 @@
+repos:
+- repo: https://github.com/pre-commit/mirrors-yapf.git
+  rev: v0.31.0
+  hooks:
+    - id: yapf
+      args: ['--style=.style.yapf', '--parallel', '--in-place']
+- repo: https://gitlab.com/pycqa/flake8
+  rev: 4.0.1
+  hooks:
+    - id: flake8
+      args: ['--exclude=**/migrations/*']
+- repo: https://github.com/pycqa/isort
+  rev: 5.10.1
+  hooks:
+    - id: isort
+      name: isort (python)
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.0.1
+  hooks:
+    - id: check-ast
+    - id: check-byte-order-marker
+    - id: check-json
+    - id: check-merge-conflict
+    - id: check-symlinks
+    - id: check-toml
+    - id: check-vcs-permalinks
+    - id: check-xml
+    - id: check-yaml
+    - id: debug-statements
+    - id: detect-private-key
+    - id: end-of-file-fixer
+    - id: forbid-new-submodules
+    - id: no-commit-to-branch
+    - id: trailing-whitespace
+      args: [--markdown-linebreak-ext=md]
